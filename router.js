@@ -93,5 +93,40 @@ router.post('/:id/comments', (req,res) => {
         })
 })
 
+// update post
+
+router.put('/:id',  (req, res) => {
+    const changes = req.body;
+    const id = req.params.id;
+    
+    Posts.update(id, changes)
+      .then(post => {
+        res.status(200).json(post);
+      })
+      .catch(() => {
+        res
+          .status(500)
+          .json({ message: "Unable to update" });
+      });
+  });
+
+  //delete post 
+
+  router.delete('/:id', (req,res) => {
+      const id = req.params.id
+
+      Posts.remove(id)
+        .then(post => {
+            if(post) {
+                res.status(200).json(post)
+            } else{
+                res.status(404).json({message: 'ID not found'})
+            }
+        })
+        .catch(error => {
+            res.status(500).json({ message: 'Unable to delete post'})
+        })
+  })
+
 
 module.exports = router;
