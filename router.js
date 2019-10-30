@@ -56,5 +56,42 @@ router.get('/:id/comments', (req,res) => {
 })
 
 
+// POST posts
+
+router.post('/', (req,res) => {
+    const newPost = req.body;
+
+    if(newPost.title && newPost.contents) {
+        Posts.insert(newPost)
+            .then(post => {
+                res.status(201).json(post)
+            })
+            .catch(error => {
+                res.status(500).json({message: 'Unable to add post'})
+            })
+    } else {
+        res.status(400).json({message: "Title and contents required"})
+    }
+})
+
+// POST comment
+
+
+router.post('/:id/comments', (req,res) => {
+    const id = req.params.id;
+    const comment = {
+        "post_id": id,
+        "text": req.body.text
+    }
+
+    Posts.insertComment(comment)
+        .then(newComment => {
+            res.status(201).json(newComment)
+        })
+        .catch(error => {
+            res.status(500).json({ message: 'unable to add comment', error})
+        })
+})
+
 
 module.exports = router;
